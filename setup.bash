@@ -45,13 +45,11 @@ response=$(curl -s --location --request POST "$HOST/robot/" \
     --data-raw "{
         \"name\": \"$robot\"
     }")
-
 robot_id=$(echo $response | grep -o '"id":[0-9]*' | grep -m 1 -o '[0-9]*$')
-robot_password=$(echo "$response" | grep -o '"password":"[a-zA-Z0-9_-]*"' | grep -m 1 -o '[a-zA-Z0-9_-]*' | tail -1)
 
 if [ $? -eq 0 ]; then
     mkdir -p $HOME/woeden
-    echo "{ \"id\": $robot_id, \"password\": \"$robot_password\" }" > $HOME/woeden/config
+    echo $response > $HOME/woeden/config
     echo
     echo "Your new robot, $robot, is now registered in Woeden."
 else
