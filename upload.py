@@ -4,7 +4,10 @@ import urllib.request
 import urllib.parse
 import os
 import shutil
+import stream_zip
 from getpass import getpass
+from datetime import datetime
+from stream_zip import stream_zip, ZIP_64
 
 
 def is_bag(path):
@@ -24,17 +27,28 @@ def upload_bag(id, dir, access):
     resp = urllib.request.urlopen(req)
     urls = json.loads(resp.read())['urls']
 
-    archive = f'{dir}.zip'
-    shutil.make_archive(dir, 'zip', dir)
     parts = []
-    with open(archive, 'rb') as f:
-        for i in range(len(urls)):
-            file_data = f.read(1073741824)
-            req = urllib.request.Request(url=urls[i], data=file_data, method='PUT')
-            res = urllib.request.urlopen(req)
-            etag = res.getheader('ETag').replace('"', '')
-            parts.append({'ETag': etag, 'PartNumber': i+1})
+    i = 1
+    chunks = stream_zip(unzipped_files())
+    for url, chunk in zip(urls, chunks):
+        req = urllib.request.Request(url = url, data = chunk, method='PUT')
+        res = urllib.request.urlopen(req)
+        etag = res.getheader('ETag').replace('"', '')
+        parts.append({'ETag': etag, 'PartNumber': i})
+        i += 1
+    
     return parts
+
+def unzipped_files():
+    modified_at = datetime.now()
+    perms = 0o600
+
+    def get_bytes(file):
+        with open(f'{dir}/{file}', 'rb') as f:
+            yield f.read(1073741824)
+
+    for file in os.listdir(dir):
+        yield file, modified_at, perms, ZIP_64, get_bytes(file)
 
 def mark_uploaded(id, parts, access):
     # parts = urllib.parse.urlencode(parts).encode()
