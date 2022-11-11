@@ -71,9 +71,10 @@ echo """
 >     restart: always
 >     volumes:
 >       - ~/woeden:/woeden
+>       - /dev/shm:/dev/shm
 """
 
 echo "Alternatively, you can simply run the command below."
 
 echo
-echo "> docker run -d -v ~/woeden:/woeden --net host --restart always public.ecr.aws/woeden/agent:latest"
+echo "> docker run -d -v ~/woeden:/woeden -v /dev/shm:/dev/shm --net host --restart always public.ecr.aws/woeden/agent:latest"
