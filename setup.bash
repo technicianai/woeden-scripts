@@ -68,13 +68,14 @@ echo """
 > woeden_monitor:
 >     image: public.ecr.aws/woeden/agent
 >     network_mode: host
+>     ipc: host
 >     restart: always
 >     volumes:
 >       - ~/woeden:/woeden
->       - /dev/shm:/dev/shm
 """
 
-echo "Alternatively, you can simply run the command below."
+echo "Alternatively, you can simply run the command below. Please note that for the agent to detect topics"
+echo "running directly on your host (not containerized), you will need to run those ROS 2 programs as root."
 
 echo
-echo "> docker run -d -v ~/woeden:/woeden -v /dev/shm:/dev/shm --net host --restart always public.ecr.aws/woeden/agent:latest"
+echo "> docker run -d --net=host --ipc=host -v ~/woeden:/woeden --restart always public.ecr.aws/woeden/agent:latest"
