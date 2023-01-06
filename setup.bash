@@ -58,7 +58,7 @@ else
     exit 1
 fi
 
-echo "Please complete registration of the robot here: http://woeden.com/app/robot/$robot_id/settings/"
+echo "Please complete registration of the robot here: http://app.woeden.com/app/robot/$robot_id/settings/"
 
 echo
 echo "To use Woeden, please be sure to run our Docker container image. You can accomplish this by adding"
