@@ -39,11 +39,15 @@ fi
 echo -n "Please enter a name for the robot: "
 read robot
 
+echo -n "Please enter the version of ROS on the robot (1 or 2): "
+read ros_version
+
 response=$(curl -s --location --request POST "$HOST/robot/" \
     --header "Authorization: Bearer $access" \
     --header 'Content-Type: application/json' \
     --data-raw "{
-        \"name\": \"$robot\"
+        \"name\": \"$robot\",
+        \"ros_version\": \"ROS$ros_version\"
     }")
 robot_id=$(echo $response | grep -o '"id":[0-9]*' | grep -m 1 -o '[0-9]*$')
 
