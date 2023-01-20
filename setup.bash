@@ -68,9 +68,11 @@ echo
 echo "To use Woeden, please be sure to run our Docker container image. You can accomplish this by adding"
 echo "the following service to the docker-compose file of your robotics project."
 
+image_name=$([ "$ros_version" = 1 ] && echo "public.ecr.aws/woeden/ros1-agent" || echo "public.ecr.aws/woeden/agent")
+
 echo """
-> woeden_monitor:
->     image: public.ecr.aws/woeden/agent
+> woeden_agent:
+>     image: $image_name
 >     network_mode: host
 >     ipc: host
 >     restart: always
@@ -79,7 +81,7 @@ echo """
 """
 
 echo "Alternatively, you can simply run the command below. Please note that for the agent to detect topics"
-echo "running directly on your host (not containerized), you will need to run those ROS 2 programs as root."
+echo "running directly on your host (not containerized), you will need to run those ROS $ros_version programs as root."
 
 echo
-echo "> docker run -d --net=host --ipc=host -v ~/woeden:/woeden --restart always public.ecr.aws/woeden/agent:latest"
+echo "> docker run -d --net=host --ipc=host -v ~/woeden:/woeden --restart always $image_name:latest"
